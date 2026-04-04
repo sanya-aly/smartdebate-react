@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartDebate - Connect. Discuss. Debate.</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+      }
+      .glass {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+      }
+      .gradient-text {
+        background: linear-gradient(135deg, #6C5CE7 0%, #00C2FF 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .btn-gradient {
+        background: linear-gradient(135deg, #6C5CE7 0%, #00C2FF 100%);
+        transition: all 0.3s ease;
+      }
+      .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(108, 92, 231, 0.4);
+      }
+      nav {
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+      }
+      input, select, textarea {
+        background: rgba(51, 65, 85, 0.5) !important;
+        border: 1px solid rgba(148, 163, 184, 0.2) !important;
+        color: #e2e8f0 !important;
+      }
+      input::placeholder, textarea::placeholder {
+        color: rgba(148, 163, 184, 0.5) !important;
+      }
+      input:focus, select:focus, textarea:focus {
+        border-color: #00C2FF !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(0, 194, 255, 0.1) !important;
+      }
+      select option { background: #1e293b; color: #e2e8f0; }
+      .card-hover { transition: all 0.3s ease; }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(108, 92, 231, 0.2);
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+      }
+      .float-anim { animation: float 4s ease-in-out infinite; }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .fade-in { animation: fadeIn 0.6s ease-out; }
+      #editModal {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+      }
+      #editModal.hidden { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
