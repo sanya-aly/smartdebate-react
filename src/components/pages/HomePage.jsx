@@ -6,6 +6,7 @@ import FilterSection from "../views/homeViews/FilterSection";
 import AnalyticsDashboard from "../views/homeViews/AnalyticsDashboard";
 import EditModal from "../views/homeViews/EditModal";
 import HeroSection from "../views/homeViews/HeroSection";
+import VoteCounter from "../views/homeViews/VoteCounter";
 
 // ============================================
 // STRING UTILITY FUNCTIONS (10 String Methods)
@@ -171,6 +172,9 @@ const HomePage = () => {
 
       {/* Analytics */}
       <AnalyticsDashboard analytics={analytics} />
+
+      {/* Lab 07 - Vote Counter */}
+      <VoteCounter />
 
       {/* Add Form */}
       <AddDebateForm onAdd={addDebate} />
