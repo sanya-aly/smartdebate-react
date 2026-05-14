@@ -1,3 +1,9 @@
+// ============================================
+// SMARTDEBATE - NAVBAR
+// src/components/layouts/Navbar.jsx
+// Updated for Assignment 03 routes
+// ============================================
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
@@ -7,7 +13,17 @@ const Navbar = () => {
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) =>
+    path === "/"
+      ? location.pathname === "/"
+      : location.pathname.startsWith(path);
+
+  const navLinks = [
+    { path: "/", label: "Home" },
+    { path: "/debates", label: "Debates" },
+    { path: "/about", label: "About" },
+    { path: "/contact", label: "Contact" },
+  ];
 
   return (
     <nav className="sticky top-0 z-50">
@@ -21,16 +37,12 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-2">
-            {[
-              { path: "/", label: "Home" },
-              { path: "/about", label: "About" },
-              { path: "/contact", label: "Contact" },
-            ].map((item) => (
+          <div className="hidden md:flex space-x-1">
+            {navLinks.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`nav-link px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
+                className={`nav-link px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-sm ${
                   isActive(item.path)
                     ? "bg-purple-600/20 text-cyan-400 border border-purple-500/30"
                     : "hover:text-cyan-400 hover:bg-white/5"
@@ -43,6 +55,14 @@ const Navbar = () => {
 
           {/* Desktop Right */}
           <div className="hidden md:flex items-center space-x-3">
+            {/* Create Debate Button */}
+            <Link
+              to="/create"
+              className="px-4 py-2 rounded-lg btn-gradient text-white font-semibold text-sm flex items-center gap-2 hover:scale-105 transition-transform"
+            >
+              <i className="fas fa-plus text-xs"></i> New Debate
+            </Link>
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -56,13 +76,13 @@ const Navbar = () => {
 
             <Link
               to="/auth/register"
-              className="px-4 py-2 rounded-lg border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300 font-semibold hover:scale-105"
+              className="px-4 py-2 rounded-lg border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300 font-semibold text-sm hover:scale-105"
             >
               Sign Up
             </Link>
             <Link
               to="/auth/login"
-              className="px-4 py-2 rounded-lg btn-gradient text-white font-semibold hover:scale-105"
+              className="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700 transition-all duration-300 font-semibold text-sm hover:scale-105"
             >
               Sign In
             </Link>
@@ -84,17 +104,16 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="mobile-menu-enter md:hidden border-t py-4" style={{ borderColor: "var(--border-color)", background: "var(--bg-nav)" }}>
+          <div
+            className="mobile-menu-enter md:hidden border-t py-4"
+            style={{ borderColor: "var(--border-color)", background: "var(--bg-nav)" }}
+          >
             <div className="flex flex-col space-y-2 px-4">
-              {[
-                { path: "/", label: "Home" },
-                { path: "/about", label: "About" },
-                { path: "/contact", label: "Contact" },
-              ].map((item) => (
+              {navLinks.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`nav-link px-4 py-3 rounded-lg font-semibold text-lg transition-all duration-300 ${
+                  className={`nav-link px-4 py-3 rounded-lg font-semibold text-base transition-all duration-300 ${
                     isActive(item.path)
                       ? "bg-purple-600/20 text-cyan-400"
                       : "hover:text-cyan-400 hover:bg-white/5"
@@ -104,9 +123,31 @@ const Navbar = () => {
                   {item.label}
                 </Link>
               ))}
-              <div className="pt-3 flex flex-col space-y-2" style={{ borderTop: "1px solid var(--border-color)" }}>
-                <Link to="/auth/register" className="px-4 py-2 rounded-lg border border-cyan-400 text-cyan-400 text-center font-semibold hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300" onClick={() => setMenuOpen(false)}>Sign Up</Link>
-                <Link to="/auth/login" className="px-4 py-2 rounded-lg btn-gradient text-white font-semibold text-center" onClick={() => setMenuOpen(false)}>Sign In</Link>
+              <div
+                className="pt-3 flex flex-col space-y-2"
+                style={{ borderTop: "1px solid var(--border-color)" }}
+              >
+                <Link
+                  to="/create"
+                  className="px-4 py-2 rounded-lg btn-gradient text-white text-center font-semibold flex items-center justify-center gap-2"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="fas fa-plus text-xs"></i> New Debate
+                </Link>
+                <Link
+                  to="/auth/register"
+                  className="px-4 py-2 rounded-lg border border-cyan-400 text-cyan-400 text-center font-semibold hover:bg-cyan-400 hover:text-slate-900 transition-all"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Sign Up
+                </Link>
+                <Link
+                  to="/auth/login"
+                  className="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700 transition-all font-semibold text-center"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
               </div>
             </div>
           </div>

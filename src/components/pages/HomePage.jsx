@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { debatesArray as initialDebates } from "../../database/debateData";
 import DebateCard from "../views/homeViews/DebateCard";
 import AddDebateForm from "../views/homeViews/AddDebateForm";
@@ -7,20 +7,22 @@ import AnalyticsDashboard from "../views/homeViews/AnalyticsDashboard";
 import EditModal from "../views/homeViews/EditModal";
 import HeroSection from "../views/homeViews/HeroSection";
 import VoteCounter from "../views/homeViews/VoteCounter";
+import { seedDebates } from "../../firebase/firestoreService";
+import { debatesArray } from "../../database/debateData";
 
 // ============================================
 // STRING UTILITY FUNCTIONS (10 String Methods)
 // ============================================
-export const formatTopic = (topic) => topic.toUpperCase();                                           // 1. toUpperCase()
-export const searchLower = (text) => text.toLowerCase();                                             // 2. toLowerCase()
-export const cleanInput = (input) => input.trim();                                                   // 3. trim()
-export const containsKeyword = (text, kw) => text.toLowerCase().includes(kw.toLowerCase());         // 4. includes()
-export const cleanDescription = (text) => text.replace(/[^a-zA-Z0-9 .,!?'-]/g, "");                // 5. replace()
-export const shortTitle = (title, len = 40) => title.length > len ? title.slice(0, len) + "..." : title; // 6. slice()
-export const getFirstName = (name) => name.trim().split(" ")[0];                                    // 7. split()
-export const startsWithLetter = (title, letter) => title.toUpperCase().startsWith(letter.toUpperCase()); // 8. startsWith()
-export const formatId = (id) => String(id).padStart(3, "0");                                        // 9. padStart()
-export const keywordPosition = (text, kw) => text.toLowerCase().indexOf(kw.toLowerCase());          // 10. indexOf()
+export const formatTopic = (topic) => topic.toUpperCase();
+export const searchLower = (text) => text.toLowerCase();
+export const cleanInput = (input) => input.trim();
+export const containsKeyword = (text, kw) => text.toLowerCase().includes(kw.toLowerCase());
+export const cleanDescription = (text) => text.replace(/[^a-zA-Z0-9 .,!?'-]/g, "");
+export const shortTitle = (title, len = 40) => title.length > len ? title.slice(0, len) + "..." : title;
+export const getFirstName = (name) => name.trim().split(" ")[0];
+export const startsWithLetter = (title, letter) => title.toUpperCase().startsWith(letter.toUpperCase());
+export const formatId = (id) => String(id).padStart(3, "0");
+export const keywordPosition = (text, kw) => text.toLowerCase().indexOf(kw.toLowerCase());
 
 const HomePage = () => {
   const [debates, setDebates] = useState([...initialDebates]);
@@ -28,9 +30,23 @@ const HomePage = () => {
   const [nextId, setNextId] = useState(9);
   const [editDebate, setEditDebate] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [seeded, setSeeded] = useState(false);
 
   // ============================================
-  // ANALYTICS - uses filter(), reduce(), find()
+  // SEED FIRESTORE BUTTON HANDLER
+  // ============================================
+  const handleSeed = async () => {
+    try {
+      await seedDebates(debatesArray);
+      setSeeded(true);
+      alert("✅ Data uploaded to Firestore successfully!");
+    } catch (err) {
+      alert("❌ Seed failed: " + err.message);
+    }
+  };
+
+  // ============================================
+  // ANALYTICS
   // ============================================
   const getAnalytics = () => {
     const total = debates.length;
@@ -58,7 +74,6 @@ const HomePage = () => {
       alert("⚠️ Author name must be at least 3 characters!");
       return;
     }
-
     const newDebate = {
       id: nextId,
       title: cleanInput(formData.title),
@@ -75,7 +90,6 @@ const HomePage = () => {
       views: Math.floor(Math.random() * 3000) + 300,
       trending: Math.random() > 0.5,
     };
-
     const updated = [...debates, newDebate];
     setDebates(updated);
     setFiltered(updated);
@@ -132,7 +146,7 @@ const HomePage = () => {
   };
 
   // ============================================
-  // SEARCH & FILTER - filter(), sort(), some(), every(), reduce()
+  // SEARCH & FILTER
   // ============================================
   const applyFilters = (filters) => {
     let result = debates.filter((d) => {
@@ -147,39 +161,51 @@ const HomePage = () => {
       const matchTrending = !filters.trending || (filters.trending === "yes" && d.trending === true);
       return matchKeyword && matchTopic && matchStatus && matchDifficulty && matchRating && matchTrending;
     });
-
-    // sort()
     if (filters.sortBy === "rating") result = [...result].sort((a, b) => b.rating - a.rating);
     else if (filters.sortBy === "date") result = [...result].sort((a, b) => new Date(b.date) - new Date(a.date));
     else if (filters.sortBy === "participants") result = [...result].sort((a, b) => b.participants - a.participants);
     else if (filters.sortBy === "views") result = [...result].sort((a, b) => b.views - a.views);
-
     setFiltered(result);
   };
 
   const analytics = getAnalytics();
-
-  // some() - koi trending hai?
   const hasTrending = filtered.some((d) => d.trending);
-  // every() - sab active hain?
   const allActive = filtered.every((d) => d.status === "Active");
-  // reduce() - total participants
   const totalParticipants = filtered.reduce((sum, d) => sum + d.participants, 0);
 
   return (
     <>
       <HeroSection />
-
-      {/* Analytics */}
       <AnalyticsDashboard analytics={analytics} />
-
-      {/* Lab 07 - Vote Counter */}
       <VoteCounter />
 
-      {/* Add Form */}
+      {/* ============================================
+          SEED FIRESTORE BUTTON (ek baar use karo)
+      ============================================ */}
+      {!seeded && (
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="glass rounded-xl p-4 border border-yellow-500/30 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-yellow-400 font-semibold text-sm">
+                <i className="fas fa-database mr-2"></i>
+                Firestore mein initial data upload karo (sirf ek baar)
+              </p>
+              <p className="text-slate-500 text-xs mt-1">
+                Click karo — 8 debates Firestore mein save ho jayenge
+              </p>
+            </div>
+            <button
+              onClick={handleSeed}
+              className="btn-gradient px-5 py-2 rounded-lg text-white font-bold text-sm whitespace-nowrap hover:scale-105 transition-transform"
+            >
+              <i className="fas fa-upload mr-2"></i>Seed Firestore
+            </button>
+          </div>
+        </div>
+      )}
+
       <AddDebateForm onAdd={addDebate} />
 
-      {/* Filter Section */}
       <FilterSection
         onFilter={applyFilters}
         hasTrending={hasTrending}
@@ -196,7 +222,6 @@ const HomePage = () => {
             <span className="text-lg text-slate-400 font-normal">({filtered.length} results)</span>
           </h2>
         </div>
-
         {filtered.length === 0 ? (
           <div className="text-center py-16">
             <i className="fas fa-search text-5xl text-slate-600 mb-4 block"></i>
@@ -241,7 +266,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Edit Modal */}
       {showModal && editDebate && (
         <EditModal
           debate={editDebate}
