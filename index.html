@@ -4,82 +4,121 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SmartDebate - Connect. Discuss. Debate.</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-      body {
-        background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);
-        color: #e2e8f0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        min-height: 100vh;
+      *, *::before, *::after { transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease; }
+
+      :root, html.dark-mode {
+        --bg-primary: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);
+        --bg-nav: rgba(15, 23, 42, 0.95);
+        --bg-glass: rgba(30, 41, 59, 0.7);
+        --bg-input: rgba(51, 65, 85, 0.5);
+        --text-primary: #e2e8f0;
+        --text-muted: #94a3b8;
+        --border-color: rgba(148, 163, 184, 0.1);
+        --border-input: rgba(148, 163, 184, 0.2);
+        --placeholder: rgba(148, 163, 184, 0.5);
+        --select-bg: #1e293b;
+        --card-shadow: rgba(108, 92, 231, 0.2);
+        --footer-border: rgba(148,163,184,0.15);
       }
-      .glass {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(148, 163, 184, 0.1);
+
+      html.light-mode {
+        --bg-primary: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+        --bg-nav: rgba(255, 255, 255, 0.97);
+        --bg-glass: rgba(255, 255, 255, 0.85);
+        --bg-input: rgba(241, 245, 249, 0.9);
+        --text-primary: #1e293b;
+        --text-muted: #64748b;
+        --border-color: rgba(0, 0, 0, 0.08);
+        --border-input: rgba(0, 0, 0, 0.15);
+        --placeholder: rgba(0, 0, 0, 0.35);
+        --select-bg: #ffffff;
+        --card-shadow: rgba(108, 92, 231, 0.12);
+        --footer-border: rgba(0,0,0,0.1);
       }
-      .gradient-text {
-        background: linear-gradient(135deg, #6C5CE7 0%, #00C2FF 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      .btn-gradient {
-        background: linear-gradient(135deg, #6C5CE7 0%, #00C2FF 100%);
-        transition: all 0.3s ease;
-      }
-      .btn-gradient:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(108, 92, 231, 0.4);
-      }
-      nav {
-        background: rgba(15, 23, 42, 0.95);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-      }
-      input, select, textarea {
-        background: rgba(51, 65, 85, 0.5) !important;
-        border: 1px solid rgba(148, 163, 184, 0.2) !important;
-        color: #e2e8f0 !important;
-      }
-      input::placeholder, textarea::placeholder {
-        color: rgba(148, 163, 184, 0.5) !important;
-      }
-      input:focus, select:focus, textarea:focus {
-        border-color: #00C2FF !important;
-        outline: none !important;
-        box-shadow: 0 0 0 3px rgba(0, 194, 255, 0.1) !important;
-      }
-      select option { background: #1e293b; color: #e2e8f0; }
-      .card-hover { transition: all 0.3s ease; }
-      .card-hover:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(108, 92, 231, 0.2);
-      }
-      @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-15px); }
-      }
-      .float-anim { animation: float 4s ease-in-out infinite; }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .fade-in { animation: fadeIn 0.6s ease-out; }
-      #editModal {
-        position: fixed; inset: 0;
-        background: rgba(0,0,0,0.7);
-        z-index: 100;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(4px);
-      }
+
+      body { background: var(--bg-primary); color: var(--text-primary); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; }
+
+      .glass { background: var(--bg-glass); backdrop-filter: blur(12px); border: 1px solid var(--border-color); }
+      html.light-mode .glass { box-shadow: 0 4px 24px rgba(108,92,231,0.07); }
+
+      .gradient-text { background: linear-gradient(135deg, #6C5CE7 0%, #00C2FF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+      .btn-gradient { background: linear-gradient(135deg, #6C5CE7 0%, #00C2FF 100%); transition: all 0.3s ease; }
+      .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(108, 92, 231, 0.45); }
+      .btn-gradient:active { transform: translateY(0); }
+
+      nav { background: var(--bg-nav); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color); }
+      html.light-mode nav { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+
+      html.light-mode .nav-link { color: #334155 !important; }
+      html.light-mode .nav-link:hover { color: #6C5CE7 !important; }
+
+      input, select, textarea { background: var(--bg-input) !important; border: 1px solid var(--border-input) !important; color: var(--text-primary) !important; transition: all 0.3s ease !important; }
+      input::placeholder, textarea::placeholder { color: var(--placeholder) !important; }
+      input:focus, select:focus, textarea:focus { border-color: #6C5CE7 !important; outline: none !important; box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15) !important; }
+      select option { background: var(--select-bg); color: var(--text-primary); }
+
+      html.light-mode .text-slate-300 { color: #475569 !important; }
+      html.light-mode .text-slate-400 { color: #64748b !important; }
+      html.light-mode .text-slate-500 { color: #94a3b8 !important; }
+      html.light-mode .border-slate-700 { border-color: rgba(0,0,0,0.1) !important; }
+      html.light-mode .bg-slate-900\/95 { background: rgba(255,255,255,0.97) !important; }
+
+      .card-hover { transition: all 0.35s cubic-bezier(0.4,0,0.2,1); }
+      .card-hover:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 40px var(--card-shadow); }
+
+      #editModal { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(6px); animation: fadeIn 0.2s ease; }
       #editModal.hidden { display: none !important; }
+
+      @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-18px); } }
+      .float-anim { animation: float 4s ease-in-out infinite; }
+
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+      .fade-in { animation: fadeIn 0.65s ease-out both; }
+
+      @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+      .fade-in-left { animation: fadeInLeft 0.6s ease-out both; }
+
+      @keyframes fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+      .fade-in-right { animation: fadeInRight 0.6s ease-out both; }
+
+      @keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+      .scale-in { animation: scaleIn 0.5s ease-out both; }
+
+      @keyframes slideDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+      .slide-down { animation: slideDown 0.4s ease-out both; }
+
+      @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(108,92,231,0.3); } 50% { box-shadow: 0 0 20px 6px rgba(108,92,231,0.15); } }
+      .pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+      .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+      .stagger-children > *:nth-child(2) { animation-delay: 0.12s; }
+      .stagger-children > *:nth-child(3) { animation-delay: 0.19s; }
+      .stagger-children > *:nth-child(4) { animation-delay: 0.26s; }
+      .stagger-children > *:nth-child(5) { animation-delay: 0.33s; }
+      .stagger-children > *:nth-child(6) { animation-delay: 0.40s; }
+
+      .theme-toggle-btn { width: 44px; height: 24px; background: rgba(108,92,231,0.3); border-radius: 12px; position: relative; cursor: pointer; border: 1px solid rgba(108,92,231,0.4); transition: all 0.3s ease; display: flex; align-items: center; }
+      .theme-toggle-thumb { width: 18px; height: 18px; background: linear-gradient(135deg, #6C5CE7, #00C2FF); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); display: flex; align-items: center; justify-content: center; font-size: 10px; }
+      html.light-mode .theme-toggle-thumb { transform: translateX(20px); }
+
+      .page-enter { animation: fadeIn 0.45s ease-out both; }
+
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #6C5CE7, #00C2FF); border-radius: 3px; }
+
+      .mobile-menu-enter { animation: slideDown 0.3s ease-out both; }
+
+      .hero-gradient { background: linear-gradient(135deg, rgba(108,92,231,0.12) 0%, rgba(0,194,255,0.1) 100%); border-radius: 20px; border: 1px solid rgba(108,92,231,0.15); }
+      html.light-mode .hero-gradient { background: linear-gradient(135deg, rgba(108,92,231,0.08) 0%, rgba(0,194,255,0.07) 100%); }
+
+      footer { border-top: 1px solid var(--footer-border) !important; }
     </style>
-    <script type="module" crossorigin src="/smartdebate-react/assets/index-BIGU3__y.js"></script>
+    <script type="module" crossorigin src="/assets/index-Cp7g2OhV.js"></script>
   </head>
   <body>
     <div id="root"></div>
